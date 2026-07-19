@@ -2,46 +2,108 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Shadow Escape: Reborn</title>
     <link rel="stylesheet" href="style.css">
     <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0d0d13">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 </head>
 <body>
     <div id="game-container">
-        <canvas id="game-canvas"></canvas>
-        <div id="ui-layer">
-            <div id="health-bar-container"><div id="health-bar"></div></div>
-            <div id="coins-display">Coins: <span id="coin-count">0</span></div>
-            <div id="touch-controls">
-                <div class="d-pad">
-                    <button id="btn-left">◀</button>
-                    <button id="btn-right">▶</button>
+        <canvas id="gameCanvas"></canvas>
+        
+        <!-- On-Screen HUD Overlay -->
+        <div id="hud-overlay" class="ui-layer hidden">
+            <div class="hud-top">
+                <div class="stat-bars">
+                    <div class="bar-container hp-container">
+                        <div class="bar-label">HP</div>
+                        <div class="bar-fill-wrapper"><div id="hp-bar" class="bar-fill"></div></div>
+                        <div id="hp-text" class="bar-text">100/100</div>
+                    </div>
+                    <div class="bar-container mp-container">
+                        <div class="bar-label">MP</div>
+                        <div class="bar-fill-wrapper"><div id="mp-bar" class="bar-fill"></div></div>
+                        <div id="mp-text" class="bar-text">50/50</div>
+                    </div>
                 </div>
-                <div class="action-pad">
-                    <button id="btn-dash">Dash</button>
-                    <button id="btn-attack">Atk</button>
-                    <button id="btn-jump">Jump</button>
+                <div class="currency-container">
+                    <div class="icon-coin">🪙</div>
+                    <div id="coin-count">0</div>
+                    <div class="icon-gem">💎</div>
+                    <div id="gem-count">0</div>
                 </div>
+            </div>
+            <div class="active-effects" id="effects-tray"></div>
+        </div>
+
+        <!-- Touch Controls Interface for Mobile Web / PWA -->
+        <div id="touch-controls" class="ui-layer hidden">
+            <div class="dpad">
+                <button id="btn-left" class="touch-btn">◀</button>
+                <button id="btn-right" class="touch-btn">▶</button>
+                <button id="btn-down" class="touch-btn">▼</button>
+                <button id="btn-up" class="touch-btn">▲</button>
+            </div>
+            <div class="action-buttons">
+                <button id="btn-dash" class="touch-btn action-sub">DASH</button>
+                <button id="btn-attack" class="touch-btn action-main">ATTACK</button>
+                <button id="btn-jump" class="touch-btn action-main">JUMP</button>
+                <button id="btn-magic" class="touch-btn action-sub">MAGIC</button>
+            </div>
+        </div>
+
+        <!-- System Menu Layer -->
+        <div id="menu-overlay" class="ui-layer">
+            <div class="menu-card" id="main-menu">
+                <h1>SHADOW ESCAPE</h1>
+                <h2>REBORN</h2>
+                <div class="menu-options">
+                    <button id="btn-new-game" class="menu-btn">New Journey</button>
+                    <button id="btn-continue" class="menu-btn locked" disabled>Continue</button>
+                    <button id="btn-settings" class="menu-btn">Settings</button>
+                    <button id="btn-leaderboard" class="menu-btn">Leaderboard</button>
+                </div>
+            </div>
+            
+            <div class="menu-card hidden" id="settings-menu">
+                <h3>Settings</h3>
+                <div class="setting-row">
+                    <label for="vol-master">Master Volume</label>
+                    <input type="range" id="vol-master" min="0" max="100" value="80">
+                </div>
+                <div class="setting-row">
+                    <label for="vol-music">Music</label>
+                    <input type="range" id="vol-music" min="0" max="100" value="70">
+                </div>
+                <div class="setting-row">
+                    <label for="vol-sfx">SFX</label>
+                    <input type="range" id="vol-sfx" min="0" max="100" value="90">
+                </div>
+                <div class="setting-row">
+                    <label for="select-lang">Language</label>
+                    <select id="select-lang">
+                        <option value="en">English</option>
+                        <option value="es">Español</option>
+                        <option value="ja">日本語</option>
+                    </select>
+                </div>
+                <button id="btn-settings-back" class="menu-btn back-btn">Back</button>
             </div>
         </div>
     </div>
-    
-    <!-- Engine Scripts -->
-    <script src="js/constants.js"></script>
-    <script src="js/utils.js"></script>
-    <script src="js/input.js"></script>
-    <script src="js/audio.js"></script>
-    <script src="js/particles.js"></script>
-    <script src="js/camera.js"></script>
-    <script src="js/physics.js"></script>
-    <script src="js/entity.js"></script>
-    <script src="js/player.js"></script>
-    <script src="js/enemy.js"></script>
-    <script src="js/level.js"></script>
-    <script src="js/renderer.js"></script>
-    <script src="js/engine.js"></script>
-    <script src="js/main.js"></script>
+
+    <!-- Engine Modules Injected as Scripts -->
+    <script type="module" src="js/main.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js').catch(err => console.error('SW Registration Failed:', err));
+            });
+        }
+    </script>
 </body>
 </html>
 
