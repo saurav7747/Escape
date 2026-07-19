@@ -1,13 +1,262 @@
-* { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
-body { background-color: #000; color: #fff; font-family: monospace; overflow: hidden; }
-#game-container { position: relative; width: 100vw; height: 100vh; display: flex; justify-content: center; align-items: center; }
-canvas { image-rendering: pixelated; width: 100%; height: 100%; object-fit: contain; }
-#ui-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; padding: 20px; }
-#health-bar-container { width: 200px; height: 20px; background: #333; border: 2px solid #fff; border-radius: 10px; overflow: hidden; }
-#health-bar { width: 100%; height: 100%; background: #ff3366; transition: width 0.2s; }
-#coins-display { font-size: 24px; font-weight: bold; margin-top: 10px; text-shadow: 2px 2px 0 #000; }
-#touch-controls { display: none; position: absolute; bottom: 20px; width: calc(100% - 40px); justify-content: space-between; pointer-events: auto; }
-.d-pad, .action-pad { display: flex; gap: 10px; }
-button { width: 60px; height: 60px; border-radius: 50%; background: rgba(255,255,255,0.2); border: 2px solid #fff; color: #fff; font-weight: bold; }
-button:active { background: rgba(255,255,255,0.5); }
-@media (max-width: 768px) { #touch-controls { display: flex; } }
+:root {
+    --bg-dark: #07070a;
+    --panel-bg: rgba(20, 20, 30, 0.85);
+    --accent-red: #ff3344;
+    --accent-blue: #3388ff;
+    --gold: #ffcc00;
+    --text-light: #f0f0f5;
+    --font-stack: 'Courier New', Courier, monospace;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background-color: var(--bg-dark);
+    font-family: var(--font-stack);
+    color: var(--text-light);
+}
+
+#game-container {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+    background-color: #000;
+}
+
+.ui-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 10;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* HUD System styles */
+.hud-top {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    right: 20px;
+    display: flex;
+    justify-content: space-between;
+    pointer-events: auto;
+}
+
+.stat-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 250px;
+}
+
+.bar-container {
+    display: flex;
+    align-items: center;
+    background: var(--panel-bg);
+    padding: 4px 8px;
+    border: 2px solid #3a3a4f;
+    border-radius: 4px;
+    position: relative;
+}
+
+.bar-label {
+    width: 30px;
+    font-weight: bold;
+    font-size: 12px;
+}
+
+.bar-fill-wrapper {
+    flex-grow: 1;
+    height: 12px;
+    background: #1a1a26;
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.bar-fill {
+    height: 100%;
+    width: 100%;
+    transition: width 0.1s linear;
+}
+
+#hp-bar { background: var(--accent-red); }
+#mp-bar { background: var(--accent-blue); }
+
+.bar-text {
+    position: absolute;
+    right: 15px;
+    font-size: 10px;
+    text-shadow: 1px 1px 2px #000;
+}
+
+.currency-container {
+    background: var(--panel-bg);
+    padding: 8px 16px;
+    border: 2px solid #3a3a4f;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+}
+
+/* Menus & Cards */
+#menu-overlay {
+    background: rgba(5, 5, 8, 0.75);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    pointer-events: auto;
+}
+
+.menu-card {
+    background: var(--panel-bg);
+    border: 3px solid #5a5a7f;
+    padding: 40px;
+    border-radius: 8px;
+    text-align: center;
+    min-width: 320px;
+    box-shadow: 0 0 30px rgba(0,0,0,0.8);
+}
+
+.menu-card h1 {
+    font-size: 32px;
+    letter-spacing: 4px;
+    color: var(--accent-red);
+    text-shadow: 0 0 10px rgba(255, 51, 68, 0.5);
+}
+
+.menu-card h2 {
+    font-size: 18px;
+    margin-bottom: 30px;
+    letter-spacing: 6px;
+    color: #8a8aaf;
+}
+
+.menu-options {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.menu-btn {
+    background: #1e1e2f;
+    color: var(--text-light);
+    border: 2px solid #4a4a6f;
+    padding: 12px 24px;
+    font-family: var(--font-stack);
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.menu-btn:hover:not(:disabled) {
+    background: var(--accent-red);
+    border-color: #ff6677;
+    transform: translateY(-2px);
+}
+
+.menu-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.setting-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.setting-row label {
+    font-size: 14px;
+}
+
+.setting-row input[type="range"] {
+    width: 150px;
+}
+
+/* Touch Input HUD Interface */
+#touch-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding: 30px;
+    box-sizing: border-box;
+}
+
+.dpad {
+    position: relative;
+    width: 160px;
+    height: 160px;
+    pointer-events: auto;
+}
+
+.touch-btn {
+    position: absolute;
+    background: rgba(40, 40, 60, 0.6);
+    border: 2px solid rgba(250,250,250,0.4);
+    color: white;
+    font-weight: bold;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    touch-action: none;
+}
+
+#btn-up    { top: 0; left: 55px; width: 50px; height: 50px; }
+#btn-down  { bottom: 0; left: 55px; width: 50px; height: 50px; }
+#btn-left  { top: 55px; left: 0; width: 50px; height: 50px; }
+#btn-right { top: 55px; right: 0; width: 50px; height: 50px; }
+
+.action-buttons {
+    display: grid;
+    grid-template-columns: repeat(2, 70px);
+    gap: 15px;
+    pointer-events: auto;
+}
+
+.action-main {
+    width: 70px;
+    height: 70px;
+    font-size: 12px;
+}
+
+.action-sub {
+    width: 60px;
+    height: 60px;
+    font-size: 10px;
+    align-self: center;
+    justify-self: center;
+}
+
