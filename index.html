@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Shadow Escape: Reborn</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+</head>
+<body>
+    <div id="game-container">
+        <canvas id="game-canvas"></canvas>
+        <div id="ui-layer">
+            <div id="health-bar-container"><div id="health-bar"></div></div>
+            <div id="coins-display">Coins: <span id="coin-count">0</span></div>
+            <div id="touch-controls">
+                <div class="d-pad">
+                    <button id="btn-left">◀</button>
+                    <button id="btn-right">▶</button>
+                </div>
+                <div class="action-pad">
+                    <button id="btn-dash">Dash</button>
+                    <button id="btn-attack">Atk</button>
+                    <button id="btn-jump">Jump</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Engine Scripts -->
+    <script src="js/constants.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/input.js"></script>
+    <script src="js/audio.js"></script>
+    <script src="js/particles.js"></script>
+    <script src="js/camera.js"></script>
+    <script src="js/physics.js"></script>
+    <script src="js/entity.js"></script>
+    <script src="js/player.js"></script>
+    <script src="js/enemy.js"></script>
+    <script src="js/level.js"></script>
+    <script src="js/renderer.js"></script>
+    <script src="js/engine.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
+
